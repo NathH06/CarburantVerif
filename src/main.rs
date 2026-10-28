@@ -65,10 +65,10 @@ fn get(long: usize, args: Vec<String>) {
         };
 
         if mode == 1 {
-            resp = carburant_lib::get_lower_price(data, args[2].as_str());
+            resp = carburant_lib::get_lower_price(&data, args[2].as_str());
         }
         else {
-            resp = CarburantStruct { ville: String::new(), lat: String::new(), long: String::new(), adresse: String::new(), type_name: String::new(), disponibility: false, prix: 0.00 };
+            resp = CarburantStruct::default();
         }
 
         println!("Informations pour la station la moins chère selon le paramètre {} {} :", args[3].as_str(), args[4].as_str());

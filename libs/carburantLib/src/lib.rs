@@ -47,6 +47,7 @@ fn search_by(search_type: &str, search_data: &str, subdata: bool) -> Vec<Value> 
 }
 
 
+#[derive(Default)]
 pub struct CarburantStruct {
     pub ville: String,
     pub lat: String,
@@ -111,49 +112,26 @@ pub fn search_by_postal_code(cp:&str ) -> Vec<Value> {
     search_by("cp", cp, true)
 }
 
-pub fn get_lower_price(stations: Vec<Value>, carburant_type: &str) -> CarburantStruct {
-    let mut gazole_price_list: Vec<PriceListStruct> = vec![];
-    let mut sp95_price_list: Vec<PriceListStruct> = vec![];
-    let mut sp98_price_list: Vec<PriceListStruct> = vec![];
-    let mut e10_price_list: Vec<PriceListStruct> = vec![];
-    let mut e85_price_list: Vec<PriceListStruct> = vec![];
-    let mut gplc_price_list: Vec<PriceListStruct> = vec![];
-    let mut result_station: CarburantStruct = CarburantStruct {adresse: String::new(), disponibility: false, type_name: carburant_type.to_string(), prix: 0.00, ville: String::new(), lat: String::new(), long: String::new()};
-    
-    for (i, station) in stations.iter().enumerate() {
-        let gazole_p: f64= station.get("gazole_prix").and_then(|v| v.as_f64()).unwrap_or(f64::MAX);
-        let sp95_p: f64 = station.get("sp95_prix").and_then(|v| v.as_f64()).unwrap_or(f64::MAX);
-        let sp98_p: f64 = station.get("sp98_prix").and_then(|v| v.as_f64()).unwrap_or(f64::MAX);
-        let e10_p: f64 = station.get("e10_prix").and_then(|v| v.as_f64()).unwrap_or(f64::MAX);
-        let e85_p: f64 = station.get("e85_prix").and_then(|v| v.as_f64()).unwrap_or(f64::MAX);
-        let gplc_p: f64 = station.get("gplc_prix").and_then(|v| v.as_f64()).unwrap_or(f64::MAX);
+pub fn get_lower_price(stations: &[Value], carburant_type: &str) -> CarburantStruct {
+    let mut carb_price_list: Vec<PriceListStruct> = vec![];
+    let mut result_station: CarburantStruct = CarburantStruct::default();
+    let carb_option: &str = match carburant_type {
+        "Gazole" => "gazole_prix",
+        "SP95" => "sp95_prix",
+        "SP98" => "sp98_prix",
+        "E10" => "e10_prix",
+        "E85" => "e85_prix",
+        "GPLc" => "gplc_prix",
+        _ => return CarburantStruct::default()
+    };
 
-        gazole_price_list.push(PriceListStruct {index: i, price: gazole_p});
-        sp95_price_list.push(PriceListStruct { index: i, price: sp95_p });
-        sp98_price_list.push(PriceListStruct { index: i, price: sp98_p });
-        e10_price_list.push(PriceListStruct { index: i, price: e10_p });
-        e85_price_list.push(PriceListStruct { index: i, price: e85_p });
-        gplc_price_list.push(PriceListStruct { index: i, price: gplc_p });
+    for (i, station) in stations.iter().enumerate() {
+        carb_price_list.push(PriceListStruct {index: i, price: station.get(carb_option).and_then(|v| v.as_f64()).unwrap_or(f64::MAX)});
     }
 
-    gazole_price_list.sort_by(|a, b| a.price.total_cmp(&b.price));
-    sp95_price_list.sort_by(|a, b| a.price.total_cmp(&b.price));
-    sp98_price_list.sort_by(|a, b| a.price.total_cmp(&b.price));
-    e10_price_list.sort_by(|a, b| a.price.total_cmp(&b.price));
-    e85_price_list.sort_by(|a, b| a.price.total_cmp(&b.price));
-    gplc_price_list.sort_by(|a, b| a.price.total_cmp(&b.price));
-
-    let price_list: Vec<PriceListStruct> = match carburant_type {
-        "Gazole" => gazole_price_list,
-        "SP95" => sp95_price_list,
-        "SP98" => sp98_price_list,
-        "E10" => e10_price_list,
-        "E85" => e85_price_list,
-        "GPLc" => gplc_price_list,
-        _ => vec![]
-    };
+    carb_price_list.sort_by(|a, b| a.price.total_cmp(&b.price));
     
-    for price in price_list.iter() {
+    for price in carb_price_list.iter() {
         if price.price == f64::MAX {
             break;
         }
