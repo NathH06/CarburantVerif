@@ -2,7 +2,7 @@
 A short rust application with french carburant data.
 
 ### Description
-The applcation is a cli tool that allows you to get the lowest fuel prices for a specific fuel type and location in France. It also list all fuel stations with their data in a specific city or postal code or address. The data is fetched from the French government data.gouv.fr database and is updated regularly to ensure accuracy.
+The application is a cli tool that allows you to get the lowest fuel prices for a specific fuel type and location in France. It also list all fuel stations with their data in a specific city or postal code or address. The data is fetched from the French government data.gouv.fr database and is updated regularly to ensure accuracy.
 
 ### Features
 - Fetch fuel prices from the French government data.
@@ -46,6 +46,10 @@ cargo run --release
 - Author of the application code: Nathan H
 - Author of the data: French government Ministères économiques et financiers (https://www.data.gouv.fr/api/1/datasets/r/b0561905-7b5e-4f38-be50-df05708acb80)
 - All french stations for sharing their data with the public.
+- All developers who created open source libraries and tools that helped in the development of this library.
+
+### License
+This project is licensed under the GNU Affero General Public License v3.0 - see the [LICENSE](LICENSE.md) file for details.
 
 ### warning
 This application and the library it uses are created for educational purposes only. The author is not responsible for any misuse of the data or any consequences that may arise from using this application and library. Please use the data responsibly and in accordance with applicable laws and regulations.
